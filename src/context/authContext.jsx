@@ -1,9 +1,11 @@
+import axios from 'axios'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const userContext = createContext()
-const navigate = useNavigate
+
 const AuthContext = ({children}) => {
+  const navigate = useNavigate
     const [user,setUser] =useState(null)
     const[loading,setLoading] = useState(true)
     useEffect(() =>{
@@ -12,20 +14,23 @@ const AuthContext = ({children}) => {
         try {
           const token = localStorage.getItem('token')
           if (token) {
-          const response = await axios.get('http://localhost:3005/api/auth/verify',{
-            Headers:{
-              "Authorization" : `Bearer ${token}`
-            }
-          })
+          const response = await axios.get('http://localhost:3005/api/auth/verify',
+            {
+            headers:{
+              Authorization : `Bearer ${token}`,
+            },
+          });
+          
           if(response.data.success){
             setUser(response.data.user)
           }
         }else{
-          navigate('/login')
+         setUser(null);
+         setLoading(false)
         }
         } catch (error) {
           if(error.response && !error.response.data.error){
-            navigate('/login')
+            setUser(null);
           }
         }finally{
           setLoading(false)
