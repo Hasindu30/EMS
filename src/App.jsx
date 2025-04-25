@@ -6,7 +6,7 @@ import EmployeeDashboard from "./pages/employeeDashboard";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import RoleBaseRoutes from "./utils/RoleBaseRoutes";
 import Unauthorized from "./pages/Unauthorized";
-import { SidebarProvider } from './context/SidebarContext'; // ✅ Import provider
+import { SidebarProvider } from './context/SidebarContext'; 
 
 function App() {
   return (
