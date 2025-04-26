@@ -7,6 +7,7 @@ import PrivateRoutes from "./utils/PrivateRoutes";
 import RoleBaseRoutes from "./utils/RoleBaseRoutes";
 import Unauthorized from "./pages/Unauthorized";
 import { SidebarProvider } from './context/SidebarContext'; 
+import EmployeeDepartment from "./pages/Departments/Department";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             </PrivateRoutes>
           } />
           <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+          <Route path="/admin/departments" element={<EmployeeDepartment />} />
         </Routes>
       </SidebarProvider>
     </BrowserRouter>

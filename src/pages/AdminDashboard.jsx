@@ -13,6 +13,39 @@ const AdminDashboard = () => {
   const { user } = useAuth();
   const { isHovered } = useSidebar();
 
+  // Summary Card
+const SummaryCard = ({ title, value, icon, color }) => (
+  <div className={`p-5 rounded-md shadow-sm text-white flex items-center gap-4 ${color}`}>
+    <div className="bg-white/20 p-2 rounded-full">{icon}</div>
+    <div>
+      <h2 className="text-sm">{title}</h2>
+      <p className="text-xl font-semibold">{value}</p>
+    </div>
+  </div>
+);
+
+// Dummy Data
+const projectData = [
+  { id: 1, name: 'Website Redesign', priority: 'High', status: 'In Progress', progress: 60 },
+  { id: 2, name: 'API Migration', priority: 'Normal', status: 'Completed', progress: 100 },
+  { id: 3, name: 'Dashboard Update', priority: 'Low', status: 'Pending', progress: 30 },
+  { id: 4, name: 'Email Server Setup', priority: 'High', status: 'Testing', progress: 75 },
+];
+
+const priorityColors = {
+  High: 'bg-red-500',
+  Normal: 'bg-yellow-500',
+  Low: 'bg-green-500',
+};
+
+const statusColors = {
+  'In Progress': 'bg-blue-500',
+  Completed: 'bg-green-600',
+  Pending: 'bg-yellow-600',
+  Testing: 'bg-purple-600',
+};
+
+
   return (
     <div className="flex min-h-screen bg-gray-100 text-gray-800">
       <AdminSidebar />
@@ -35,7 +68,7 @@ const AdminDashboard = () => {
 
           {/* Chart Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white p-4 rounded-xl shadow-md">
+            <div className="bg-white p-4 rounded-md shadow-md">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">Visitors Overview</h2>
                 <BarChart2 size={20} className="text-gray-500" />
@@ -45,7 +78,7 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div className="bg-white p-4 rounded-xl shadow-md">
+            <div className="bg-white p-4 rounded-md shadow-md">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">Sales by Category</h2>
                 <PieChart size={20} className="text-gray-500" />
@@ -57,7 +90,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Project Table */}
-          <div className="bg-white p-6 rounded-xl shadow-md">
+          <div className="bg-white p-6 rounded-md shadow-md">
             <h2 className="text-xl font-semibold mb-4">Project Progress</h2>
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm">
@@ -106,36 +139,6 @@ const AdminDashboard = () => {
   );
 };
 
-// Summary Card
-const SummaryCard = ({ title, value, icon, color }) => (
-  <div className={`p-5 rounded-xl shadow-md text-white flex items-center gap-4 ${color}`}>
-    <div className="bg-white/20 p-2 rounded-full">{icon}</div>
-    <div>
-      <h2 className="text-sm">{title}</h2>
-      <p className="text-xl font-semibold">{value}</p>
-    </div>
-  </div>
-);
 
-// Dummy Data
-const projectData = [
-  { id: 1, name: 'Website Redesign', priority: 'High', status: 'In Progress', progress: 60 },
-  { id: 2, name: 'API Migration', priority: 'Normal', status: 'Completed', progress: 100 },
-  { id: 3, name: 'Dashboard Update', priority: 'Low', status: 'Pending', progress: 30 },
-  { id: 4, name: 'Email Server Setup', priority: 'High', status: 'Testing', progress: 75 },
-];
-
-const priorityColors = {
-  High: 'bg-red-500',
-  Normal: 'bg-yellow-500',
-  Low: 'bg-green-500',
-};
-
-const statusColors = {
-  'In Progress': 'bg-blue-500',
-  Completed: 'bg-green-600',
-  Pending: 'bg-yellow-600',
-  Testing: 'bg-purple-600',
-};
 
 export default AdminDashboard;
