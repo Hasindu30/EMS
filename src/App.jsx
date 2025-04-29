@@ -8,6 +8,7 @@ import RoleBaseRoutes from "./utils/RoleBaseRoutes";
 import Unauthorized from "./pages/Unauthorized";
 import { SidebarProvider } from './context/SidebarContext'; 
 import EmployeeDepartment from "./pages/Departments/Department";
+import Employee from "./pages/Employees/Employee";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           } />
           <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
           <Route path="/admin/departments" element={<EmployeeDepartment />} />
+          <Route path="/admin/employees" element={<Employee/>} />
         </Routes>
       </SidebarProvider>
     </BrowserRouter>

@@ -5,7 +5,7 @@ import { Home, Users, Building, Calendar, DollarSign, Settings } from 'lucide-re
 import { useSidebar } from '../../context/SidebarContext';
 
 const menuItems = [
-  { name: 'Dashboard', icon: <Home size={25} />, path: '/admin/dashboard' },
+  { name: 'Dashboard', icon: <Home size={25} />, path: '/admin-dashboard' },
   { name: 'Employees', icon: <Users size={25} />, path: '/admin/employees' },
   { name: 'Departments', icon: <Building size={25} />, path: '/admin/departments' },
   { name: 'Leaves', icon: <Calendar size={25} />, path: '/admin/leaves' },
