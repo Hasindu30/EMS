@@ -4,7 +4,7 @@ import Navbar from '../../components/dashboard/Navbar'
 import DataTable from 'react-data-table-component'
 // import { columns } from '../../utils/DepartmentHelpers'
 import { useSidebar } from '../../context/SidebarContext' 
-import { Plus } from 'lucide-react';
+import { Pencil, Plus, Trash2 } from 'lucide-react';
 import SidePopup from '../../components/common/SidePopup'
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
@@ -19,7 +19,17 @@ const Department = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [search, setSearch] = useState('');
- 
+  const [isEditMode, setIsEditMode] = useState(false);
+    const [selectedDepartmentId, setSelectedDepartmentId] = useState(null);
+    const handleEdit = (row) => {
+      setIsEditMode(true);
+      setSelectedDepartmentId(row._id);
+      setValue('depName', row.depName || '');
+      setValue('section', row.section || '');
+      setValue('designation', row.designation || '');
+      setIsPopupOpen(true);
+    };
+   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
    const columns =[
     {
         name:"Department",
@@ -34,9 +44,25 @@ const Department = () => {
         selector: (row) => row.designation
     },
     {
-        name:"Actions",
-        selector: (row) => row.action
-    },
+      name: "Action",
+      cell: (row) => (
+        <div className="flex gap-3">
+          <button
+            onClick={() => handleEdit(row)}
+            className="text-blue-500 hover:text-blue-700"
+          >
+            <Pencil size={18} />
+          </button>
+          <button
+            onClick={() => handleDelete(row._id)}
+            className="text-red-500 hover:text-red-700"
+          >
+            <Trash2 size={18} />
+          </button>
+        </div>
+      ),
+      ignoreRowClick: true,   
+    }
 ]
   useEffect(() => {
     fetchDepartments();
@@ -55,18 +81,63 @@ const Department = () => {
       setLoading(false);
     }
   };
+  const [deleteDepartmentId, setDeleteDepartmentId] = useState(null);
+  const handleDelete = (id) => {
+      setDeleteDepartmentId(id);
+      setIsDeletePopupOpen(true);
+    };
+    
+    const confirmDelete = async () => {
+      try {
+        if (!deleteDepartmentId) {
+          console.error('No Department selected for deletion.');
+          return;
+        }
+    
+        await axios.delete(`/api/departmentdelete/${deleteDepartmentId}`);
+    
+        toast.success('Department deleted successfully!', {
+          position: "top-right",
+          autoClose: 3000,
+        });
+    
+        setIsDeletePopupOpen(false);
+        setDeleteDepartmentId(null); // clear selected id
+        fetchDepartments();          // refresh Department list
+      } catch (error) {
+        console.error(error);
+        toast.error('Failed to delete Department!', {
+          position: "top-center",
+          autoClose: false,
+        });
+      }
+    };
   const onSubmit = async (formData) => {
     try {
-      await axios.post('/api/department', formData);
+      if (isEditMode) {
+        await axios.put(`/api/departmentupdate/${selectedDepartmentId}`, formData);
+        toast.success('Department updated successfully!', {
+                  position: "top-right",
+                  autoClose: 3000,
+                });
+      }else{
+        await axios.post('/api/department', formData);
+        toast.success('Department created successfully!', {
+          position: "top-right",
+          autoClose: 3000,
+        });   
+      }
+      
       setIsPopupOpen(false); // close popup
       reset();               // reset form
       fetchDepartments(); 
-      toast.success('Employee created successfully!', {
-                position: "top-right",
-                autoClose: 3000,
-              });   
+      
     } catch (error) {
       console.error("Error creating department:", error);
+      toast.error('Failed to create or update department!', {
+              position: "top-center",
+              autoClose: false,
+            });
     }
   };
 const validationSchema = yup.object().shape({
@@ -91,8 +162,13 @@ const validationSchema = yup.object().shape({
     <ToastContainer />
      <SidePopup
   isOpen={isPopupOpen}
-  onClose={() => setIsPopupOpen(false)}
-  title="Add Department"
+  onClose={() => {
+    setIsPopupOpen(false);
+    setIsEditMode(false);
+    reset(); 
+  }
+  }
+  title={isEditMode ? "Edit Department" : "Create Department"} 
 >
   
   <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -102,7 +178,7 @@ const validationSchema = yup.object().shape({
       {...register('depName')}
         type="text"
         className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
-        placeholder="Enter employee name"
+        placeholder="Enter Department name"
         
       />
        {errors.depName && <p className="text-red-500 text-xs">{errors.depName.message}</p>}
@@ -133,12 +209,36 @@ const validationSchema = yup.object().shape({
         type="submit"
         className="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition text-sm"
       >
-        Create
+        {isEditMode ? "Update" : "Create"}
       </button>
     </div>
   </form>
 </SidePopup>
-
+<SidePopup
+ isOpen={isDeletePopupOpen}
+ onClose={() => setIsDeletePopupOpen(false)}
+ title="Delete Department"
+>
+<div className="flex flex-col items-center justify-center gap-6 p-6">
+    <p className="text-gray-700 text-center text-lg">
+      Are you sure you want to delete this department?
+    </p>
+    <div className="flex justify-center gap-4">
+      <button
+        onClick={() => setIsDeletePopupOpen(false)}
+        className="px-6 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+      >
+        No
+      </button>
+      <button
+        onClick={confirmDelete}
+        className="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+      >
+        Yes
+      </button>
+    </div>
+  </div>
+</SidePopup>
     <div className="flex min-h-screen bg-gray-100 text-gray-800">
       <AdminSidebar />
       
